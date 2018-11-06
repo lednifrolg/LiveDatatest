@@ -4,16 +4,13 @@ import android.app.Application;
 import android.arch.core.util.Function;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
-import android.os.AsyncTask;
 
 import com.subhrajyoti.borrow.db.AppDatabase;
 import com.subhrajyoti.borrow.db.DatabaseCreator;
 import com.subhrajyoti.borrow.db.model.BorrowModel;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -23,8 +20,8 @@ import java.util.concurrent.Executors;
 
 public class BorrowedListViewModel extends AndroidViewModel {
 
-    private LiveData<List<BorrowModel>> itemAndPersonList;
     private MutableLiveData<List<BorrowModel>> itemAndPersonListMutable = new MutableLiveData<>();
+
     private static final MutableLiveData ABSENT = new MutableLiveData();
     private AppDatabase appDatabase;
 
@@ -38,27 +35,26 @@ public class BorrowedListViewModel extends AndroidViewModel {
     public BorrowedListViewModel(Application application) {
         super(application);
         executorService = Executors.newSingleThreadExecutor();
-
     }
 
     public void sortData() {
-        if(itemAndPersonList.getValue() != null) {
-            Collections.sort(itemAndPersonList.getValue(), new Comparator() {
-                @Override
-                public int compare(Object o1, Object o2) {
-                    BorrowModel p1 = (BorrowModel) o1;
-                    BorrowModel p2 = (BorrowModel) o2;
-                    return p1.getPersonName().compareToIgnoreCase(p2.getPersonName());
-                }
+        List<BorrowModel> list = itemAndPersonListMutable.getValue();
+        if (list != null) {
+            Collections.sort(list, (Comparator) (o1, o2) -> {
+                BorrowModel p1 = (BorrowModel) o1;
+                BorrowModel p2 = (BorrowModel) o2;
+                return p1.getPersonName().compareToIgnoreCase(p2.getPersonName());
             });
+
+            itemAndPersonListMutable.setValue(list);
         }
     }
 
     public LiveData<List<BorrowModel>> getProducts() {
-        if(itemAndPersonList == null || itemAndPersonList.getValue() == null) {
+        if (itemAndPersonListMutable == null || itemAndPersonListMutable.getValue() == null) {
             loadProducts();
         }
-        return itemAndPersonList;
+        return itemAndPersonListMutable;
     }
 
     private void loadProducts() {
@@ -66,10 +62,11 @@ public class BorrowedListViewModel extends AndroidViewModel {
 
         final LiveData<Boolean> databaseCreated = databaseCreator.isDatabaseCreated();
 
-        itemAndPersonList = Transformations.switchMap(databaseCreated,
+        itemAndPersonListMutable = Transformations.switchMap(databaseCreated,
                 new Function<Boolean, LiveData<List<BorrowModel>>>() {
 
-                    @Override public LiveData<List<BorrowModel>> apply(Boolean isDbCreated) {
+                    @Override
+                    public LiveData<List<BorrowModel>> apply(Boolean isDbCreated) {
                         if (!isDbCreated) { // Not needed here, but watch out for null
                             //noinspection unchecked
                             return ABSENT;
@@ -80,8 +77,6 @@ public class BorrowedListViewModel extends AndroidViewModel {
                         }
                     }
                 });
-
-        itemAndPersonListMutable.setValue(itemAndPersonList.getValue());
 
         databaseCreator.createDb(this.getApplication());
     }
