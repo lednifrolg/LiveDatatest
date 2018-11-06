@@ -20,8 +20,9 @@ import java.util.concurrent.Executors;
 
 public class BorrowedListViewModel extends AndroidViewModel {
 
+    private LiveData<List<BorrowModel>> itemAndPersonList;
     private MutableLiveData<List<BorrowModel>> itemAndPersonListMutable = new MutableLiveData<>();
-
+    private MutableLiveData<Boolean> sortData = new MutableLiveData<>();
     private static final MutableLiveData ABSENT = new MutableLiveData();
     private AppDatabase appDatabase;
 
@@ -35,6 +36,14 @@ public class BorrowedListViewModel extends AndroidViewModel {
     public BorrowedListViewModel(Application application) {
         super(application);
         executorService = Executors.newSingleThreadExecutor();
+
+        Transformations.map(itemAndPersonList, new Function<List<BorrowModel>, Object>() {
+            @Override
+            public Object apply(List<BorrowModel> input) {
+                itemAndPersonListMutable.setValue(input);
+                return null;
+            }
+        });
     }
 
     public void sortData() {
@@ -62,7 +71,7 @@ public class BorrowedListViewModel extends AndroidViewModel {
 
         final LiveData<Boolean> databaseCreated = databaseCreator.isDatabaseCreated();
 
-        itemAndPersonListMutable = Transformations.switchMap(databaseCreated,
+        itemAndPersonList = Transformations.switchMap(databaseCreated,
                 new Function<Boolean, LiveData<List<BorrowModel>>>() {
 
                     @Override
