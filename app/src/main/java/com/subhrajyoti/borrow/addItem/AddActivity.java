@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.subhrajyoti.borrow.R;
-import com.subhrajyoti.borrow.db.BorrowModel;
+import com.subhrajyoti.borrow.db.model.BorrowModel;
 
 import java.util.Calendar;
 import java.util.Date;

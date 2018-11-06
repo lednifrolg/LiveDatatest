@@ -5,17 +5,19 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.os.AsyncTask;
 
 import com.subhrajyoti.borrow.db.AppDatabase;
-import com.subhrajyoti.borrow.db.BorrowModel;
+import com.subhrajyoti.borrow.db.DatabaseCreator;
+import com.subhrajyoti.borrow.db.model.BorrowModel;
 
 
 public class AddBorrowViewModel extends AndroidViewModel {
 
     private AppDatabase appDatabase;
+    final DatabaseCreator databaseCreator = DatabaseCreator.getInstance(this.getApplication());
 
     public AddBorrowViewModel(Application application) {
         super(application);
 
-        appDatabase = AppDatabase.getDatabase(this.getApplication());
+        appDatabase = databaseCreator.getDatabase();
 
     }
 
@@ -33,7 +35,7 @@ public class AddBorrowViewModel extends AndroidViewModel {
 
         @Override
         protected Void doInBackground(final BorrowModel... params) {
-            db.itemAndPersonModel().addBorrow(params[0]);
+            db.getBorrowDao().addBorrow(params[0]);
             return null;
         }
 

@@ -7,28 +7,33 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.subhrajyoti.borrow.R;
-import com.subhrajyoti.borrow.db.BorrowModel;
+import com.subhrajyoti.borrow.db.model.BorrowModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> {
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder>
+{
 
     private List<BorrowModel> borrowModelList;
     private View.OnLongClickListener longClickListener;
 
-    public RecyclerViewAdapter(List<BorrowModel> borrowModelList, View.OnLongClickListener longClickListener) {
-        this.borrowModelList = borrowModelList;
+    public RecyclerViewAdapter (View.OnLongClickListener longClickListener)
+    {
+        this.borrowModelList = new ArrayList<>();
         this.longClickListener = longClickListener;
     }
 
     @Override
-    public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerViewHolder onCreateViewHolder (ViewGroup parent, int viewType)
+    {
         return new RecyclerViewHolder(LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recycler_item, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerViewHolder holder, int position) {
+    public void onBindViewHolder (final RecyclerViewHolder holder, int position)
+    {
         BorrowModel borrowModel = borrowModelList.get(position);
         holder.itemTextView.setText(borrowModel.getItemName());
         holder.nameTextView.setText(borrowModel.getPersonName());
@@ -38,21 +43,27 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public int getItemCount() {
+    public int getItemCount ()
+    {
         return borrowModelList.size();
     }
 
-    public void addItems(List<BorrowModel> borrowModelList) {
-        this.borrowModelList = borrowModelList;
+    public void setList (List<BorrowModel> productList)
+    {
+        this.borrowModelList.clear();
+        this.borrowModelList.addAll(productList);
         notifyDataSetChanged();
+
     }
 
-    static class RecyclerViewHolder extends RecyclerView.ViewHolder {
+    static class RecyclerViewHolder extends RecyclerView.ViewHolder
+    {
         private TextView itemTextView;
         private TextView nameTextView;
         private TextView dateTextView;
 
-        RecyclerViewHolder(View view) {
+        RecyclerViewHolder (View view)
+        {
             super(view);
             itemTextView = view.findViewById(R.id.itemTextView);
             nameTextView = view.findViewById(R.id.nameTextView);

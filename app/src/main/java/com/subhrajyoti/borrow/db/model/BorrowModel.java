@@ -1,4 +1,4 @@
-package com.subhrajyoti.borrow.db;
+package com.subhrajyoti.borrow.db.model;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
@@ -16,9 +16,33 @@ public class BorrowModel {
     @TypeConverters(DateConverter.class)
     private Date borrowDate;
 
+    public BorrowModel() {
+
+    }
+
     public BorrowModel(String itemName, String personName, Date borrowDate) {
         this.itemName = itemName;
         this.personName = personName;
+        this.borrowDate = borrowDate;
+    }
+
+    public void setId (int id)
+    {
+        this.id = id;
+    }
+
+    public void setItemName (String itemName)
+    {
+        this.itemName = itemName;
+    }
+
+    public void setPersonName (String personName)
+    {
+        this.personName = personName;
+    }
+
+    public void setBorrowDate (Date borrowDate)
+    {
         this.borrowDate = borrowDate;
     }
 

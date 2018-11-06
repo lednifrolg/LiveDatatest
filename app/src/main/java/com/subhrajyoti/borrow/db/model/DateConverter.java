@@ -1,4 +1,4 @@
-package com.subhrajyoti.borrow.db;
+package com.subhrajyoti.borrow.db.model;
 
 import android.arch.persistence.room.TypeConverter;
 

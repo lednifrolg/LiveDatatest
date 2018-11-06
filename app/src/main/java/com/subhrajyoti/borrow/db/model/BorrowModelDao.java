@@ -1,9 +1,11 @@
-package com.subhrajyoti.borrow.db;
+package com.subhrajyoti.borrow.db.model;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.TypeConverters;
 
@@ -20,6 +22,9 @@ public interface BorrowModelDao {
 
     @Query("select * from BorrowModel where id = :id")
     BorrowModel getItembyId(String id);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertAll(List<BorrowModel> products);
 
     @Insert(onConflict = REPLACE)
     void addBorrow(BorrowModel borrowModel);
